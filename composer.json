@@ -24,7 +24,7 @@
     },
     "scripts": {
         "post-create-project-cmd": [
-            "php -r \"mkdir('src'.DIRECTORY_SEPARATOR.'Http');\"",
+            "php -r \"mkdir('src'.DIRECTORY_SEPARATOR.'Http');\""
         ]
     },
     "config": {
