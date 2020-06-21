@@ -11,7 +11,7 @@ use DanEnglish\PackageCreator\Exceptions\InvalidConfiguration;
 class PackageCreatorServiceProvider extends ServiceProvider
 {
     protected $vendorName = 'dan-english';
-    protected $packageName = 'PackageCreator';
+    protected $packageName = 'package-creator';
 
     /**
      * Indicates if loading of the provider is deferred.
