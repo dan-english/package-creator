@@ -1,0 +1,43 @@
+{
+    "name": "dan-english/package-creator",
+    "description": "Package creator for my laravel projects",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dan English",
+            "email": "dan.english@gmail.com"
+        }
+    ],
+    "require": {
+      "php": "^7.2",
+      "illuminate/support": "~7"
+    },
+    "require-dev": {},
+    "autoload": {
+        "psr-4": {
+            "DanEnglish\\PackageCreator\\": "src/"
+        },
+        "files": []
+    },
+    "autoload-dev": {
+        "psr-4": {}
+    },
+    "scripts": {
+        "post-create-project-cmd": [
+            "php -r \"mkdir('src'.DIRECTORY_SEPARATOR.'Http');\"",
+        ]
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "optimize-autoloader": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "DanEnglish\\PackageCreator\\PackageCreatorServiceProvider"
+            ],
+            "aliases": {}
+        }
+    }
+}
