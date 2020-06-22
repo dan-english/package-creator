@@ -8,7 +8,7 @@ use Packages\Logic\HasLogicPassThrough;
 use Packages\{PACKAGENAME}\Models\Logic\{MODELNAME}Logic;
 
 /**
- * Class {PACKAGENAME}
+ * Class {MODELNAME}
  *
  * @package Packages\{PACKAGENAME}\Models
  */
@@ -28,9 +28,9 @@ class {MODELNAME} extends Model
         parent::boot();
     }
 
-    public function logic(): {PACKAGENAME}Logic
+    public function logic(): {MODELNAME}Logic
     {
-        return new {PACKAGENAME}Logic($this);
+        return new {MODELNAME}Logic($this);
     }
 
 

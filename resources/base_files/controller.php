@@ -3,7 +3,7 @@ namespace Packages\{PACKAGENAME}\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Packages\{PACKAGENAME}\Models\{PACKAGENAME};
+use Packages\{PACKAGENAME}\Models\{MODELNAME};
 
 
 /**
