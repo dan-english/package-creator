@@ -24,19 +24,23 @@ class NewPackageCommand extends Command
     protected $description = 'Create a new package folder';
 
     protected $folders = [
+        'Assets',
+        'Assets/js',
+        'Assets/js/components',
+        'Events',
         'Http',
         'Http/Controllers',
-        'Observers',
-        'Providers',
+        'Listeners',
         'Models',
         'Models/Logic',
-        'Listeners',
-        'Views',
+        'Observers',
+        'Providers',
         'Tests',
+        'Views',
     ];
 
     protected $packageName = '';
-    protected $modelName = '';
+    protected $modelName   = '';
 
     /**
      * Create a new command instance.
@@ -63,7 +67,7 @@ class NewPackageCommand extends Command
         $this->info($this->packageName);
         $this->info($this->modelName);
 
-        $base_path = base_path();
+        $base_path    = base_path();
         $package_path = $base_path .'/packages/'.$this->packageName;
 
         $this->info($package_path);
@@ -207,17 +211,4 @@ class NewPackageCommand extends Command
 
     }
 
-    /**
-     * Create the Vue component folder for this package
-     */
-    private function vueComponent()
-    {
-        $path = resource_path();
-        $r_path = $path . "/js/components/".$this->packageName;
-
-        if (!File::exists($r_path)) {
-            File::makeDirectory($r_path);
-        }
-
-    }
 }
