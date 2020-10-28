@@ -41,6 +41,8 @@ class NewPackageCommand extends Command
 
     protected $packageName = '';
     protected $modelName   = '';
+    protected $packagePath = '';
+
 
     /**
      * Create a new command instance.
@@ -60,7 +62,7 @@ class NewPackageCommand extends Command
     public function handle()
     {
 
-        $this->checkForPackageServiceProviderInProject();
+
 
         $packageName = $this->argument('packagename');
         $this->packageName = ucfirst($packageName);
@@ -71,14 +73,19 @@ class NewPackageCommand extends Command
         $this->info($this->modelName);
 
         $base_path    = base_path();
-        $package_path = $base_path .'/packages/'.$this->packageName;
+        $this->package_path = $base_path .'/packages/'.$this->packageName;
 
-        $this->info($package_path);
+        $this->info($this->package_path);
+
+        $this->checkForPackageServiceProviderInProject();
+        $this->checkForAnnotationsServiceProviderInProject();
+        $this->checkForLogicPassThrough();
+        //@todo update composer PS4 mapping
 
         if (!File::exists($package_path)){
-            $result = File::makeDirectory($package_path);
+            $result = File::makeDirectory($this->package_path);
             foreach($this->folders as $folder) {
-                $f_path = $package_path."/".$folder;
+                $f_path = $this->package_path."/".$folder;
                 $result = File::makeDirectory($f_path);
             }
 
@@ -112,6 +119,41 @@ class NewPackageCommand extends Command
 
         }
     }
+    /**
+     * Check that this laravel project has the package service provider which will process our custom packages
+    **/
+    private function checkForAnnotationsServiceProviderInProject()
+    {
+        $annotationsServiceProvider = app_path() . '/providers/AnnotationsServiceProvider.php';
+        if (!file_exists($annotationsServiceProvider)) {
+          $this->warn('Annotations Provider does not exist, copying from base package');
+          $base_annotationsServiceProvider  =  __DIR__.'../../../resources/base_files/AnnotationsServiceProvider.php';
+
+          $success = \File::copy($base_annotationsServiceProvider, $annotationsServiceProvider);
+          $result = File::makeDirectory(app_path() . '/Http/Annotations');
+
+        }
+    }
+
+    private function checkForLogicPassThrough()
+      {
+
+        $logicpassthroughfolder = base_path() . '/packages/Logic';
+        $logicPassThroughFile = $logicpassthroughfolder . '/HasLogicPassThrough.php';
+        $base_logicPassThroughFile  =  __DIR__.'../../../resources/base_files/PackageServiceProvider.php';
+
+        if (!file_exists($logicPassThroughFile)) {
+          $this->warn('Logic Pass Through does not exist, copying from base package');
+
+          // create the logic folder if it doesnt exist
+          if(!file_exists($logicpassthroughfolder)) {
+            $result = File::makeDirectory($logicpassthroughfolder);
+          }
+
+          $success = \File::copy($base_logicPassThroughFile, $logicPassThroughFile);
+        }
+
+      }
 
     /**
      * Replace tags within string with package relevant names
