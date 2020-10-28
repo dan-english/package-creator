@@ -59,6 +59,9 @@ class NewPackageCommand extends Command
      */
     public function handle()
     {
+
+        $this->checkForPackageServiceProviderInProject();
+
         $packageName = $this->argument('packagename');
         $this->packageName = ucfirst($packageName);
         //drop the 's' off the end @todo check that the name is plural before dropping the last character
@@ -93,6 +96,21 @@ class NewPackageCommand extends Command
         $this->warn($configLine);
 
         Artisan::call('make:migration create_'.Str::lower($this->packageName).'_table');
+    }
+
+    /**
+     * Check that this laravel project has the package service provider which will process our custom packages
+    **/
+    private function checkForPackageServiceProviderInProject()
+    {
+        $packagesServiceProvider = app_path() . '/providers/PackageServiceProvider.php';
+        if (!file_exists($packagesServiceProvider)) {
+          $this->warn('Service Provider Manager does not exist, copying from base package');
+          $base_packageServiceProvider  =  __DIR__.'../../../resources/base_files/PackageServiceProvider.php';
+
+          $success = \File::copy($base_packageServiceProvider, $packagesServiceProvider);
+
+        }
     }
 
     /**
