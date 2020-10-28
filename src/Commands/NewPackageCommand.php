@@ -21,7 +21,7 @@ class NewPackageCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Create a new package folder';
+    protected $description = 'Create a new package folder. Use plural model name';
 
     protected $folders = [
         'Assets',
@@ -61,7 +61,7 @@ class NewPackageCommand extends Command
     {
         $packageName = $this->argument('packagename');
         $this->packageName = ucfirst($packageName);
-        //try and drop the 's' off the end
+        //drop the 's' off the end @todo check that the name is plural before dropping the last character
         $this->modelName = (mb_substr($this->packageName, 0, -1));
 
         $this->info($this->packageName);
@@ -88,7 +88,6 @@ class NewPackageCommand extends Command
         $this->makeObserver();
         $this->makeView();
         $this->makeSeeder();
-        $this->vueComponent();
 
         $configLine = 'Packages\\'.$this->packageName.'\Providers\\'.$this->packageName.'ServiceProvider::class,';
         $this->warn($configLine);
