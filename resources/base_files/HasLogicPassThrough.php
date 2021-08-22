@@ -1,78 +1,25 @@
 <?php
-namespace App\Providers;
-
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Str;
+namespace Packages\Logic;
 
 /**
- * Class PackageServiceProvider
+ * Class HasLogicPassThrough
  *
- * @package App\Providers
+ * @package Packages\Logic
  */
-class PackageServiceProvider extends ServiceProvider
+trait HasLogicPassThrough
 {
-    protected $packageName  = null;
-    protected $loadViews    = false;
-    protected $scanRoutes   = [];
-    protected $scanEvents   = [];
-    protected $listen       = [];
-    protected $subscribe    = [];
-
     /**
+     * @param $method
+     * @param $parameters
      *
+     * @return mixed
      */
-    public function boot()
+    public function __call($method, $parameters)
     {
-
-        /**
-         * If the package name has not been set by the service provider then we assume the package has a
-         * service provider named ExamplePackageServiceProvider and set the package name to be the
-         * snake case version. So in this case we'd set packageName to example_package.
-         */
-        if (is_null($this->packageName)) {
-            $classBasename = class_basename($this);
-            if (Str::endsWith($classBasename, 'ServiceProvider')) {
-                $this->packageName = Str::snake(str_replace("ServiceProvider", "", $classBasename));
-            }
+        if (method_exists($this, 'logic') && method_exists($this->logic(), $method)) {
+            return $this->logic()->$method($parameters);
         }
 
-        /**
-         * If the loadViews is set to true, then look for a folder called Views in the package folder
-         * and load the views from it using the snake_case package name
-         */
-        if (!is_null($this->packageName) && $this->loadViews === true) {
-            $path = __DIR__ . "/../../packages/" . Str::studly($this->packageName) . "/Views";
-            if (is_dir($path)) {
-                $this->loadViewsFrom($path, $this->packageName);
-            }
-        }
-
-        \Event::listen('packages.scan.routes', function () {
-            return $this->scanRoutes;
-        });
-
-        \Event::listen('packages.scan.events', function () {
-            return $this->scanEvents;
-        });
-
-        foreach ($this->listen as $event => $listeners) {
-            foreach ($listeners as $listener) {
-                \Event::listen($event, $listener);
-            }
-        }
-
-        foreach ($this->subscribe as $subscriber) {
-            \Event::subscribe($subscriber);
-        }
-
-    }
-
-    /**
-     * register
-     */
-    public function register()
-    {
-        //
+        return parent::__call($method, $parameters);
     }
 }
