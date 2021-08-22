@@ -1,6 +1,8 @@
 ## Package Creator
 
 This was used as the example for creating a custom Laravel package for my Laravel projects.
+
+working on laravel 8.0 support
 #### expects:
 packages/
 
