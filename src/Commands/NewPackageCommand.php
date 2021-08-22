@@ -62,8 +62,6 @@ class NewPackageCommand extends Command
     public function handle()
     {
 
-
-
         $packageName = $this->argument('packagename');
         $this->packageName = ucfirst($packageName);
         //drop the 's' off the end @todo check that the name is plural before dropping the last character
@@ -74,7 +72,6 @@ class NewPackageCommand extends Command
 
         $base_path    = base_path();
         $this->package_path = $base_path .'/packages/'.$this->packageName;
-
         $this->info($this->package_path);
 
         $this->checkForPackageServiceProviderInProject();
@@ -82,7 +79,7 @@ class NewPackageCommand extends Command
         $this->checkForLogicPassThrough();
         //@todo update composer PS4 mapping
 
-        if (!File::exists($package_path)){
+        if (!File::exists($this->package_path)){
             $result = File::makeDirectory($this->package_path);
             foreach($this->folders as $folder) {
                 $f_path = $this->package_path."/".$folder;
@@ -100,60 +97,86 @@ class NewPackageCommand extends Command
         $this->makeSeeder();
 
         $configLine = 'Packages\\'.$this->packageName.'\Providers\\'.$this->packageName.'ServiceProvider::class,';
-        $this->warn($configLine);
+
+        $appConfig = base_path() . '/config/app.php';
+        $contents               = file_get_contents( $appConfig);
+        $replace_with =  "'providers' => [". "\n\t" .$configLine;
+        $updated_contents       = preg_replace('/\'providers\' => \[/i', $replace_with, $contents);
+        file_put_contents($appConfig, $updated_contents);
+
+
 
         Artisan::call('make:migration create_'.Str::lower($this->packageName).'_table');
     }
 
     /**
      * Check that this laravel project has the package service provider which will process our custom packages
-    **/
+     **/
     private function checkForPackageServiceProviderInProject()
     {
-        $packagesServiceProvider = app_path() . '/providers/PackageServiceProvider.php';
-        if (!file_exists($packagesServiceProvider)) {
-          $this->warn('Service Provider Manager does not exist, copying from base package');
-          $base_packageServiceProvider  =  __DIR__.'../../../resources/base_files/PackageServiceProvider.php';
+        $packagesServiceProvider = app_path() . '/Providers/PackageServiceProvider.php';
 
-          $success = \File::copy($base_packageServiceProvider, $packagesServiceProvider);
+        if (!file_exists($packagesServiceProvider)) {
+            $this->warn('Service Provider Manager does not exist, copying from base package');
+            $base_packageServiceProvider  =  __DIR__.'../../../resources/base_files/PackageServiceProvider.php';
+
+            $success = \File::copy($base_packageServiceProvider, $packagesServiceProvider);
+
+            $appConfig = base_path() . '/config/app.php';
+            $contents               = file_get_contents( $appConfig);
+            $replace_with =  "'providers' => [". "\n\t" . 'App\Providers\PackageServiceProvider::class,';
+            $updated_contents       = preg_replace('/\'providers\' => \[/i', $replace_with, $contents);
+            file_put_contents($appConfig, $updated_contents);
 
         }
+
+
+
+
+
     }
     /**
      * Check that this laravel project has the package service provider which will process our custom packages
-    **/
+     **/
     private function checkForAnnotationsServiceProviderInProject()
     {
-        $annotationsServiceProvider = app_path() . '/providers/AnnotationsServiceProvider.php';
+        $annotationsServiceProvider = app_path() . '/Providers/AnnotationsServiceProvider.php';
         if (!file_exists($annotationsServiceProvider)) {
-          $this->warn('Annotations Provider does not exist, copying from base package');
-          $base_annotationsServiceProvider  =  __DIR__.'../../../resources/base_files/AnnotationsServiceProvider.php';
+            $this->warn('Annotations Provider does not exist, copying from base package');
+            $base_annotationsServiceProvider  =  __DIR__.'../../../resources/base_files/AnnotationsServiceProvider.php';
 
-          $success = \File::copy($base_annotationsServiceProvider, $annotationsServiceProvider);
-          $result = File::makeDirectory(app_path() . '/Http/Annotations');
+            $success = \File::copy($base_annotationsServiceProvider, $annotationsServiceProvider);
+            $result = File::makeDirectory(app_path() . '/Http/Annotations');
+
+            $appConfig = base_path() . '/config/app.php';
+            $contents               = file_get_contents( $appConfig);
+            $replace_with =  "'providers' => [". "\n\t" . 'App\Providers\AnnotationsServiceProvider::class,';
+            $updated_contents       = preg_replace('/\'providers\' => \[/i', $replace_with, $contents);
+            file_put_contents($appConfig, $updated_contents);
+
 
         }
     }
 
     private function checkForLogicPassThrough()
-      {
+    {
 
         $logicpassthroughfolder = base_path() . '/packages/Logic';
         $logicPassThroughFile = $logicpassthroughfolder . '/HasLogicPassThrough.php';
-        $base_logicPassThroughFile  =  __DIR__.'../../../resources/base_files/PackageServiceProvider.php';
+        $base_logicPassThroughFile  =  __DIR__.'../../../resources/base_files/HasLogicPassThrough.php';
 
         if (!file_exists($logicPassThroughFile)) {
-          $this->warn('Logic Pass Through does not exist, copying from base package');
+            $this->warn('Logic Pass Through does not exist, copying from base package');
 
-          // create the logic folder if it doesnt exist
-          if(!file_exists($logicpassthroughfolder)) {
-            $result = File::makeDirectory($logicpassthroughfolder);
-          }
+            // create the logic folder if it doesnt exist
+            if(!file_exists($logicpassthroughfolder)) {
+                $result = File::makeDirectory($logicpassthroughfolder);
+            }
 
-          $success = \File::copy($base_logicPassThroughFile, $logicPassThroughFile);
+            $success = \File::copy($base_logicPassThroughFile, $logicPassThroughFile);
         }
 
-      }
+    }
 
     /**
      * Replace tags within string with package relevant names
@@ -264,7 +287,7 @@ class NewPackageCommand extends Command
 
         $contents         = file_get_contents( __DIR__.'../../../resources/base_files/seeder.php');
         $updated_contents = $this->updateFileContents($contents);
-        $path             = database_path() .'/seeds/'.$this->packageName.'Seeder.php';
+        $path             = database_path() .'/seeders/'.$this->packageName.'Seeder.php';
 
         file_put_contents($path, $updated_contents);
 

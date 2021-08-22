@@ -4,6 +4,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
+use Packages\Candidates\Http\Controllers\CandidatesController;
 
 /**
  * Class PackageServiceProvider
@@ -12,12 +13,12 @@ use Illuminate\Support\Str;
  */
 class PackageServiceProvider extends ServiceProvider
 {
-    protected $packageName  = null;
-    protected $loadViews    = false;
-    protected $scanRoutes   = [];
-    protected $scanEvents   = [];
-    protected $listen       = [];
-    protected $subscribe    = [];
+    protected $packageName = null;
+    protected $loadViews = false;
+    protected $scanRoutes = [];
+    protected $scanEvents = [];
+    protected $listen = [];
+    protected $subscribe = [];
 
     /**
      *
@@ -43,29 +44,29 @@ class PackageServiceProvider extends ServiceProvider
          */
         if (!is_null($this->packageName) && $this->loadViews === true) {
             $path = __DIR__ . "/../../packages/" . Str::studly($this->packageName) . "/Views";
+
             if (is_dir($path)) {
                 $this->loadViewsFrom($path, $this->packageName);
             }
         }
 
-        \Event::listen('packages.scan.routes', function () {
+        Event::listen('packages.scan.routes', function () {
             return $this->scanRoutes;
         });
 
-        \Event::listen('packages.scan.events', function () {
+        Event::listen('packages.scan.events', function () {
             return $this->scanEvents;
         });
 
         foreach ($this->listen as $event => $listeners) {
             foreach ($listeners as $listener) {
-                \Event::listen($event, $listener);
+                Event::listen($event, $listener);
             }
         }
 
         foreach ($this->subscribe as $subscriber) {
-            \Event::subscribe($subscriber);
+            Event::subscribe($subscriber);
         }
-
     }
 
     /**

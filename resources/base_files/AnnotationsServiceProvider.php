@@ -100,6 +100,7 @@ class AnnotationsServiceProvider extends ServiceProvider {
      */
     protected function mergeScansFromEvent($scans, $type)
     {
+
         foreach (Event::dispatch("packages.scan.$type") as $others) {
             if (is_array($others)) {
                 $scans = array_merge($scans, $others);
