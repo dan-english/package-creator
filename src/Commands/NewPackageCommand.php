@@ -71,7 +71,13 @@ class NewPackageCommand extends Command
         $this->info($this->modelName);
 
         $base_path    = base_path();
-        $this->package_path = $base_path .'/packages/'.$this->packageName;
+        $package_base_path =  $base_path .'/packages';
+
+        if (!File::exists($package_base_path)){
+            $result = File::makeDirectory($package_base_path);
+        }
+
+        $this->package_path = $package_base_path.'/'.$this->packageName;
         $this->info($this->package_path);
 
         $this->checkForPackageServiceProviderInProject();
