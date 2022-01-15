@@ -27,7 +27,6 @@ class NewPackageCommand extends Command
         'Assets',
         'Assets/js',
         'Assets/js/components',
-        'Events',
         'Http',
         'Http/Controllers',
         'Listeners',
@@ -35,8 +34,6 @@ class NewPackageCommand extends Command
         'Models/Logic',
         'Observers',
         'Providers',
-        'Tests',
-        'Views',
     ];
 
     protected $packageName = '';
