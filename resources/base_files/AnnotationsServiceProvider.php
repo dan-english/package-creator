@@ -67,10 +67,10 @@ class AnnotationsServiceProvider extends ServiceProvider {
      * Add annotation classes to the route scanner
      * @param RouteScanner $namespace
      */
-    public function addRoutingAnnotations(RouteScanner $scanner)
-    {
-        $scanner->addAnnotationNamespace('App\Http\Annotations');
-    }
+//    public function addRoutingAnnotations(RouteScanner $scanner)
+//    {
+//        $scanner->addAnnotationNamespace('App\Http\Annotations');
+//    }
 
     /**
      * @return array
