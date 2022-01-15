@@ -61,11 +61,21 @@ class NewPackageCommand extends Command
 
         $packageName = $this->argument('packagename');
         $this->packageName = ucfirst($packageName);
-        //drop the 's' off the end @todo check that the name is plural before dropping the last character
-        $this->modelName = (mb_substr($this->packageName, 0, -1));
+        $this->modelName = $this->packageName;
+        $this->tableName = Str::lower($this->packageName);
+
+        if (substr($this->packageName, -2) === 'es') {
+            $this->modelName = (mb_substr($this->packageName, 0, -2));
+        }
+        elseif(substr($this->packageName, -1) === 's') {
+            $this->modelName = (mb_substr($this->packageName, 0, -1));
+        }
+
+        $this->packageName = str_replace("_", "",  $this->packageName);
 
         $this->info($this->packageName);
         $this->info($this->modelName);
+        $this->info($this->tableName);
 
         $base_path    = base_path();
         $package_base_path =  $base_path .'/packages';
@@ -111,7 +121,7 @@ class NewPackageCommand extends Command
 
 
 
-        Artisan::call('make:migration create_'.Str::lower($this->packageName).'_table');
+        Artisan::call('make:migration create_'.Str::lower($this->tableName).'_table');
     }
 
     /**
