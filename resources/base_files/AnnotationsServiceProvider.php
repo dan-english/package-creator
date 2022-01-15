@@ -3,7 +3,7 @@ namespace App\Providers;
 
 use Collective\Annotations\AnnotationsServiceProvider as ServiceProvider;
 use Illuminate\Contracts\Foundation\Application;
-use Collective\Annotations\Routing\Annotations\Scanner;
+use Collective\Annotations\Routing\Scanner as RouteScanner;
 use Illuminate\Support\Facades\Event;
 
 
@@ -64,9 +64,10 @@ class AnnotationsServiceProvider extends ServiceProvider {
     }
 
     /**
-     * @param \Collective\Annotations\Routing\Annotations\Scanner $scanner
+     * Add annotation classes to the route scanner
+     * @param RouteScanner $namespace
      */
-    public function addRoutingAnnotations(Scanner $scanner)
+    public function addRoutingAnnotations(RouteScanner $scanner)
     {
         $scanner->addAnnotationNamespace('App\Http\Annotations');
     }

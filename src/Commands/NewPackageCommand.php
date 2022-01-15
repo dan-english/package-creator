@@ -99,8 +99,10 @@ class NewPackageCommand extends Command
         $this->makeModel();
         $this->makeModelLogic();
         $this->makeObserver();
-        $this->makeView();
+        //with the move to inertia we don't need a local view folder
+//        $this->makeView();
         $this->makeSeeder();
+        $this->makeInertiaPage();
 
         $configLine = 'Packages\\'.$this->packageName.'\Providers\\'.$this->packageName.'ServiceProvider::class,';
 
@@ -296,6 +298,23 @@ class NewPackageCommand extends Command
         $path             = database_path() .'/seeders/'.$this->packageName.'Seeder.php';
 
         file_put_contents($path, $updated_contents);
+
+    }
+
+    /**
+     * Copy & update a basic index vue page
+     */
+    private function makeInertiaPage()
+    {
+
+        $contents         = file_get_contents( __DIR__.'../../../resources/base_files/page.vue');
+        $updated_contents = $this->updateFileContents($contents);
+        $result           = File::makeDirectory( base_path() .'/resources/js/Pages/'.$this->packageName );
+
+        if($result) {
+            $path = base_path() .'/resources/js/Pages/'.$this->packageName.'/Index.vue';
+            file_put_contents($path, $updated_contents);
+        }
 
     }
 

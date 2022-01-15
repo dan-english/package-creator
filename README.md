@@ -2,7 +2,18 @@
 
 This was used as the example for creating a custom Laravel package for my Laravel projects.
 
-working on laravel 8.0 support
+# Requirements
+Annotations package
+`composer require laravelcollective/annotations`
+
+- a "packages" directory
+- Update composer.json PSR-4 with the "packages" path
+
+
+`alias cc='clear;composer dump-autoload; php artisan cache:clear; php artisan view:clear; php artisan config:clear; php artisan config:clear; php artisan route:clear'`
+`alias a_route='php artisan route:clear; php artisan route:scan;php artisan route:list'`
+
+
 #### expects:
 packages/
 

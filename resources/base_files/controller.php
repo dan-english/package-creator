@@ -1,5 +1,6 @@
 <?php
 namespace Packages\{PACKAGENAME}\Http\Controllers;
+use Inertia\Inertia;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -24,11 +25,11 @@ class {PACKAGENAME}Controller extends Controller
     /**
      * @Get("/{LOWER_PACKAGENAME}", as="{LOWER_PACKAGENAME}.main")
      *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @return \Inertia\Response
      */
     public function index()
     {
-        return view('{LOWER_PACKAGENAME}::index');
+        return Inertia::render('{PACKAGENAME}/Index');
     }
 
 }
