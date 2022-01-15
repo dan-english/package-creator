@@ -23,6 +23,8 @@ class {MODELNAME} extends Model
 
     protected $hidden = [];
 
+    protected $table = '{TABLENAME}';
+
     public static function boot()
     {
         parent::boot();

@@ -39,6 +39,9 @@ class NewPackageCommand extends Command
     protected $packageName = '';
     protected $modelName   = '';
     protected $packagePath = '';
+    protected $skip_migrations = [
+        'users',
+    ];
 
 
     /**
@@ -64,7 +67,10 @@ class NewPackageCommand extends Command
         $this->modelName = $this->packageName;
         $this->tableName = Str::lower($this->packageName);
 
-        if (substr($this->packageName, -2) === 'es') {
+        if (substr($this->packageName, -3) === 'ies') {
+            $this->modelName = (mb_substr($this->packageName, 0, -3)) . "y";
+        }
+        elseif (substr($this->packageName, -2) === 'es') {
             $this->modelName = (mb_substr($this->packageName, 0, -2));
         }
         elseif(substr($this->packageName, -1) === 's') {
@@ -72,6 +78,8 @@ class NewPackageCommand extends Command
         }
 
         $this->packageName = str_replace("_", "",  $this->packageName);
+        $this->modelName = str_replace("_", "",  $this->modelName);
+
 
         $this->info($this->packageName);
         $this->info($this->modelName);
@@ -120,8 +128,10 @@ class NewPackageCommand extends Command
         file_put_contents($appConfig, $updated_contents);
 
 
+        if (!in_array ($this->tableName, $this->skip_migrations)) {
+            Artisan::call('make:migration create_'.Str::lower($this->tableName).'_table');
+        }
 
-        Artisan::call('make:migration create_'.Str::lower($this->tableName).'_table');
     }
 
     /**
@@ -207,7 +217,9 @@ class NewPackageCommand extends Command
         $model_name         = preg_replace('/\{MODELNAME\}/i', $this->modelName, $lower_package_name);
         $lower_model_name   = preg_replace('/\{LOWER_MODELNAME\}/i', STR::lower($this->modelName), $model_name);
 
-        return $lower_model_name;
+        $table_name_update   = preg_replace('/\{TABLENAME\}/i', STR::lower($this->tableName), $lower_model_name);
+
+        return $table_name_update;
     }
 
     /**
