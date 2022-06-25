@@ -29,7 +29,9 @@ class {PACKAGENAME}Controller extends Controller
      */
     public function index()
     {
-        return Inertia::render('{PACKAGENAME}/Index');
+        // return Inertia::render('{PACKAGENAME}/Index');
+        return Inertia::render('@{PACKAGENAME}::Index');
+
     }
 
 }
