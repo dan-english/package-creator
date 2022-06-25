@@ -3,7 +3,7 @@
 This was used as the example for creating a custom Laravel package for my Laravel projects.
 
 # Requirements
-Annotations package
+Annotations package (laravel 8 support)
 `composer require laravelcollective/annotations`
 
 - a "packages" directory
@@ -18,6 +18,7 @@ Annotations package
 packages/
 
 #### attempts to create:
+```
 packages/<package-name>/Http
 packages/<package-name>/Http/Controllers
 packages/<package-name>/Http/Controllers/<package-name>Controller.php
@@ -38,3 +39,24 @@ packages/<package-name>/Providers/<package-name>ServiceProvider.php
 packages/<package-name>/Tests
 packages/<package-name>/Views
 packages/<package-name>/Views/index.blade.php
+```
+
+
+In app.js
+```
+
+    resolve: (name) => {
+
+        const matched = /@(.*)::/.exec(name);
+
+        if (matched === null) {
+            return require(`./Pages/${name}`).default;
+        }
+
+        const module = matched[1];
+        const pageName = name.replace(matched[0], "");
+        return require(`../../packages/${module}/Assets/Pages/${pageName}.vue`) //in root of project
+
+
+    },
+```

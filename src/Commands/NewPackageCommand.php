@@ -27,6 +27,7 @@ class NewPackageCommand extends Command
         'Assets',
         'Assets/js',
         'Assets/js/components',
+        'Assets/Pages',
         'Http',
         'Http/Controllers',
         'Listeners',
